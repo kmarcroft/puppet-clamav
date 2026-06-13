@@ -46,9 +46,9 @@ describe 'clamav::clamav_milter', type: :class do
       context 'with milter service stopped and disabled' do
         let(:pre_condition) do
           "class { 'clamav':
-            manage_clamav_milter:         true,
-            clamav_milter_service_ensure: 'stopped',
-            clamav_milter_service_enable: false,
+            manage_clamav_milter         => true,
+            clamav_milter_service_ensure => 'stopped',
+            clamav_milter_service_enable => false,
           }"
         end
 
@@ -62,8 +62,8 @@ describe 'clamav::clamav_milter', type: :class do
       context 'with custom clamav_milter_options' do
         let(:pre_condition) do
           "class { 'clamav':
-            manage_clamav_milter:    true,
-            clamav_milter_options:   { 'MilterSocket' => 'inet:8891@localhost' },
+            manage_clamav_milter   => true,
+            clamav_milter_options  => { 'MilterSocket' => 'inet:8891@localhost' },
           }"
         end
 
@@ -75,9 +75,7 @@ describe 'clamav::clamav_milter', type: :class do
       # sort_options parameter                                              #
       # ------------------------------------------------------------------ #
       context 'with sort_options => false' do
-        let(:pre_condition) do
-          "class { 'clamav': manage_clamav_milter => true }"
-        end
+        let(:pre_condition) { "include clamav" }
         let(:params) { { sort_options: false } }
 
         it { is_expected.to compile.with_all_deps }

@@ -54,9 +54,9 @@ describe 'clamav::clamd', type: :class do
       context 'with clamd service stopped and disabled' do
         let(:pre_condition) do
           "class { 'clamav':
-            manage_clamd:         true,
-            clamd_service_ensure: 'stopped',
-            clamd_service_enable: false,
+            manage_clamd         => true,
+            clamd_service_ensure => 'stopped',
+            clamd_service_enable => false,
           }"
         end
 
@@ -81,11 +81,11 @@ describe 'clamav::clamd', type: :class do
       context 'with custom clamd_options' do
         let(:pre_condition) do
           "class { 'clamav':
-            manage_clamd:  true,
-            clamd_options: {
-              'MaxThreads'       => 32,
-              'ExcludePath'      => ['^/proc/', '^/sys/'],
-              'DetectPUA'        => true,
+            manage_clamd  => true,
+            clamd_options => {
+              'MaxThreads'  => 32,
+              'ExcludePath' => ['^/proc/', '^/sys/'],
+              'DetectPUA'   => true,
             },
           }"
         end
@@ -101,9 +101,7 @@ describe 'clamav::clamd', type: :class do
       # sort_options parameter                                              #
       # ------------------------------------------------------------------ #
       context 'with sort_options => false' do
-        let(:pre_condition) do
-          "class { 'clamav': manage_clamd => true }"
-        end
+        let(:pre_condition) { "include clamav" }
         let(:params) { { sort_options: false } }
 
         it { is_expected.to compile.with_all_deps }
