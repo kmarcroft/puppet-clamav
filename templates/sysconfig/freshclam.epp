@@ -1,0 +1,5 @@
+<%- | Optional[String] $freshclam_delay = undef | -%>
+### File managed by Puppet - do not edit manually ###
+<%- unless $freshclam_delay =~ Undef { -%>
+FRESHCLAM_DELAY=<%= $freshclam_delay %>
+<%- } -%>

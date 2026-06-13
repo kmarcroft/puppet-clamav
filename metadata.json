@@ -1,67 +1,77 @@
 {
-  "name": "edestecd-clamav",
-  "version": "3.0.0",
-  "author": "Chris Edester",
+  "name": "marckri-clamav",
+  "version": "4.0.0",
+  "author": "Kristian Marcroft",
   "summary": "Puppet Module for managing ClamAV",
-  "license": "GPL-3.0+",
-  "source": "https://github.com/edestecd/puppet-clamav.git",
-  "project_page": "https://github.com/edestecd/puppet-clamav",
-  "issues_url": "https://github.com/edestecd/puppet-clamav/issues",
+  "license": "GPL-3.0",
+  "source": "https://github.com/kmarcroft/puppet-clamav.git",
+  "project_page": "https://github.com/kmarcroft/puppet-clamav",
+  "issues_url": "https://github.com/kmarcroft/puppet-clamav/issues",
   "dependencies": [
     {
       "name": "puppetlabs/stdlib",
-      "version_requirement": ">= 4.13.0 < 10.0.0"
-    },
-    {
-      "name": "puppet/epel",
-      "version_requirement": ">= 4.0.0 < 6.0.0"
+      "version_requirement": ">= 9.0.0 < 10.0.0"
     }
   ],
   "operatingsystem_support": [
     {
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
-        "7",
-        "8"
+        "8",
+        "9",
+        "10"
       ]
     },
     {
       "operatingsystem": "CentOS",
       "operatingsystemrelease": [
-        "7",
-        "8"
+        "8",
+        "9"
+      ]
+    },
+    {
+      "operatingsystem": "AlmaLinux",
+      "operatingsystemrelease": [
+        "8",
+        "9",
+        "10"
+      ]
+    },
+    {
+      "operatingsystem": "Rocky",
+      "operatingsystemrelease": [
+        "8",
+        "9",
+        "10"
       ]
     },
     {
       "operatingsystem": "OracleLinux",
       "operatingsystemrelease": [
-        "7",
-        "8"
+        "8",
+        "9",
+        "10"
       ]
     },
     {
       "operatingsystem": "Debian",
       "operatingsystemrelease": [
-        "8",
-        "9",
-	"11"
+        "12",
+        "13"
       ]
     },
     {
       "operatingsystem": "Ubuntu",
       "operatingsystemrelease": [
-        "14.04",
-        "16.04",
-        "18.04",
-        "20.04",
-        "22.04"
+        "24.04",
+        "26.04"
       ]
     }
   ],
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">= 4.7.0 < 9.0.0"
+      "version_requirement": ">= 8.0.0 < 9.0.0"
     }
   ],
   "tags": [
@@ -74,7 +84,7 @@
     "virus",
     "antivirus"
   ],
-  "pdk-version": "3.0.0",
-  "template-url": "pdk-default#3.0.0",
-  "template-ref": "tags/3.0.0-0-g056e50d"
+  "pdk-version": "3.3.0",
+  "template-url": "pdk-default#3.3.0",
+  "template-ref": "tags/3.3.0"
 }

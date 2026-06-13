@@ -1,0 +1,123 @@
+---
+# Defaults for all RedHat-family systems (RHEL 8/9/10, AlmaLinux, Rocky, etc.)
+# ClamAV packages come from EPEL.
+
+clamav::manage_repo:     true
+clamav::clamav_package:  'clamav'
+clamav::clamav_version:  'installed'
+
+# ---- User ----
+clamav::user:    'clamscan'
+clamav::comment: 'Clamav scanner user'
+clamav::uid:     497
+clamav::gid:     497
+clamav::home:    '/'
+clamav::shell:   '/sbin/nologin'
+clamav::group:   'clamscan'
+
+# ---- clamd ----
+clamav::clamd_package:        'clamd'
+clamav::clamd_version:        'installed'
+clamav::clamd_config:         '/etc/clamd.d/scan.conf'
+clamav::clamd_service:        'clamd@scan'
+clamav::clamd_service_ensure: 'running'
+clamav::clamd_service_enable: true
+
+clamav::clamd_options:
+  AllowAllMatchScan:        true
+  Bytecode:                 true
+  BytecodeSecurity:         'TrustSigned'
+  BytecodeTimeout:          60000
+  CommandReadTimeout:       5
+  CrossFilesystems:         true
+  DatabaseDirectory:        '/var/lib/clamav'
+  Debug:                    false
+  DetectPUA:                false
+  DisableCertCheck:         false
+  ExitOnOOM:                false
+  ExtendedDetectionInfo:    true
+  FixStaleSocket:           true
+  FollowDirectorySymlinks:  false
+  FollowFileSymlinks:       false
+  ForceToDisk:              false
+  Foreground:               false
+  HeuristicScanPrecedence:  false
+  IdleTimeout:              30
+  LeaveTemporaryFiles:      false
+  LocalSocket:              '/var/run/clamd.scan/clamd.sock'
+  LocalSocketGroup:         'clamscan'
+  LocalSocketMode:          '666'
+  LogClean:                 false
+  LogFacility:              'LOG_LOCAL6'
+  LogFileMaxSize:           0
+  LogRotate:                false
+  LogSyslog:                true
+  LogTime:                  true
+  LogVerbose:               false
+  MaxConnectionQueueLength: 15
+  MaxDirectoryRecursion:    15
+  MaxEmbeddedPE:            '10M'
+  MaxHTMLNoTags:            '2M'
+  MaxHTMLNormalize:         '10M'
+  MaxScriptNormalize:       '5M'
+  MaxThreads:               12
+  MaxZipTypeRcg:            '1M'
+  OfficialDatabaseOnly:     false
+  PhishingScanURLs:         true
+  PhishingSignatures:       true
+  PidFile:                  '/var/run/clamd.scan/clamd.pid'
+  ReadTimeout:              180
+  ScanArchive:              true
+  ScanELF:                  true
+  ScanHTML:                 true
+  ScanMail:                 true
+  ScanOLE2:                 true
+  ScanPE:                   true
+  ScanSWF:                  true
+  SelfCheck:                3600
+  TemporaryDirectory:       '/var/tmp'
+  User:                     'clamscan'
+
+# ---- freshclam ----
+clamav::freshclam_package:        'clamav-update'
+clamav::freshclam_version:        'installed'
+clamav::freshclam_config:         '/etc/freshclam.conf'
+clamav::freshclam_service:        'clamav-freshclam'
+clamav::freshclam_service_ensure: 'running'
+clamav::freshclam_service_enable: true
+clamav::freshclam_sysconfig:      '/etc/sysconfig/freshclam'
+
+clamav::freshclam_options:
+  Bytecode:           true
+  Checks:             24
+  ConnectTimeout:     30
+  DatabaseDirectory:  '/var/lib/clamav'
+  DatabaseMirror:
+    - 'database.clamav.net'
+  DatabaseOwner:      'clamupdate'
+  Debug:              false
+  DNSDatabaseInfo:    'current.cvd.clamav.net'
+  Foreground:         false
+  LogFacility:        'LOG_LOCAL6'
+  LogSyslog:          true
+  LogTime:            true
+  LogVerbose:         false
+  MaxAttempts:        5
+  NotifyClamd:        '/etc/clamd.d/scan.conf'
+  ReceiveTimeout:     30
+  ScriptedUpdates:    true
+  TestDatabases:      true
+
+# ---- clamav-milter ----
+clamav::clamav_milter_package:        'clamav-milter'
+clamav::clamav_milter_version:        'installed'
+clamav::clamav_milter_config:         '/etc/mail/clamav-milter.conf'
+clamav::clamav_milter_service:        'clamav-milter'
+clamav::clamav_milter_service_ensure: 'running'
+clamav::clamav_milter_service_enable: true
+
+clamav::clamav_milter_options:
+  ClamdSocket:  'tcp:127.0.0.1'
+  LogSyslog:    true
+  MilterSocket: 'inet:8890@localhost'
+  User:         'clamilt'

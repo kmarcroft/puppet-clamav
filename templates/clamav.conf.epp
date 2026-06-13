@@ -1,0 +1,15 @@
+<%- |
+  Hash[String[1], Any] $config_options,
+  Boolean              $sort_options = true,
+| -%>
+### File managed by Puppet - do not edit manually ###
+<%- $keys = $sort_options ? { true => $config_options.keys.sort, default => $config_options.keys } -%>
+<%- $keys.each |$k| { -%>
+<%- $raw  = $config_options[$k] -%>
+<%- $vals = ($raw =~ Array) ? { true => $raw, false => [$raw] } -%>
+<%- $vals.each |$av| { -%>
+<%- unless $av =~ Undef { -%>
+<%= "${k} ${av}" %>
+<%- } -%>
+<%- } -%>
+<%- } -%>

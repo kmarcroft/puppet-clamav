@@ -1,4 +1,4 @@
-# @summary Installs clamav package
+# @summary Installs the base ClamAV package.
 class clamav::install {
   package { 'clamav':
     ensure => $clamav::clamav_version,

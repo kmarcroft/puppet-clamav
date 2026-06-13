@@ -31,7 +31,6 @@ default_fact_files.each do |f|
   end
 end
 
-# read default_facts and merge them over what is provided by facterdb
 default_facts.each do |fact, value|
   add_custom_fact fact, value
 end
@@ -39,8 +38,6 @@ end
 RSpec.configure do |c|
   c.default_facts = default_facts
   c.before :each do
-    # set to strictest setting for testing
-    # by default Puppet runs at warning level
     Puppet.settings[:strict] = :warning
     Puppet.settings[:strict_variables] = true
   end
@@ -48,6 +45,7 @@ RSpec.configure do |c|
   c.after(:suite) do
     RSpec::Puppet::Coverage.report!(0)
   end
+end
 
   # Filter backtrace noise
   backtrace_exclusion_patterns = [
