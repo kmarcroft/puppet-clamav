@@ -81,6 +81,20 @@
 #   Whether to enable the clamav-milter service at boot.
 # @param clamav_milter_options
 #   Hash of clamav-milter configuration key/value pairs.  Deep-merged across Hiera levels.
+# @param manage_on_access
+#   Whether to enable on-access scanning via fanotify.  Requires a Linux kernel
+#   with fanotify support and clamd running with the necessary privileges (the
+#   on-access thread retains them even when the User directive is set).
+#   manage_clamd must also be true.  Defaults to detection-only mode
+#   (OnAccessPrevention false) to minimise performance impact.
+# @param on_access_paths
+#   Absolute paths that clamd's on-access scanner monitors.  Accepts an array
+#   for multiple paths.  At least one path must be set for on-access scanning
+#   to function (e.g. ["/home", "/tmp"]).
+# @param on_access_options
+#   Hash of on-access clamd configuration key/value pairs merged on top of
+#   clamd_options when manage_on_access is true.  Deep-merged across Hiera
+#   levels.  Override OnAccessPrevention, OnAccessExcludePath, etc. here.
 #
 class clamav (
   Boolean                        $manage_user                  = false,
@@ -126,6 +140,10 @@ class clamav (
   Stdlib::Ensure::Service        $clamav_milter_service_ensure = 'running',
   Boolean                        $clamav_milter_service_enable = true,
   Hash[String[1], NotUndef]      $clamav_milter_options        = {},
+
+  Boolean                        $manage_on_access             = false,
+  Array[Stdlib::Absolutepath]    $on_access_paths              = [],
+  Hash[String[1], NotUndef]      $on_access_options            = {},
 ) {
   if $manage_repo {
     include epel

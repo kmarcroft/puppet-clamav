@@ -64,6 +64,16 @@ describe 'clamav', type: :class do
       end
 
       # ------------------------------------------------------------------ #
+      # manage_on_access                                                    #
+      # ------------------------------------------------------------------ #
+      context 'with manage_clamd => true and manage_on_access => true' do
+        let(:params) { { manage_clamd: true, manage_on_access: true, on_access_paths: ['/home'] } }
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_class('clamav::clamd') }
+      end
+
+      # ------------------------------------------------------------------ #
       # manage_freshclam                                                    #
       # ------------------------------------------------------------------ #
       context 'with manage_freshclam => true' do

@@ -9,6 +9,8 @@ lookup_options:
     merge: deep
   clamav::clamav_milter_options:
     merge: deep
+  clamav::on_access_options:
+    merge: deep
 
 # These booleans are false by default; enable what you need in your Hiera.
 clamav::manage_user:          false
@@ -16,4 +18,18 @@ clamav::manage_repo:          false
 clamav::manage_clamd:         false
 clamav::manage_freshclam:     false
 clamav::manage_clamav_milter: false
+clamav::manage_on_access:     false
+
+# On-access scanning defaults: detection-only, exclude root processes and
+# noisy pseudo-filesystems to keep performance impact low.
+clamav::on_access_paths: []
+
+clamav::on_access_options:
+  OnAccessPrevention:     false
+  OnAccessExcludeRootUID: true
+  OnAccessMaxFileSize:    '5M'
+  OnAccessExcludePath:
+    - '/proc'
+    - '/sys'
+    - '/dev'
 

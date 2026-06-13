@@ -6,6 +6,18 @@
 class clamav::clamd (
   Boolean $sort_options = true,
 ) {
+  # When on-access scanning is requested, merge the on-access paths and options
+  # on top of the base clamd options so they land in clamd.conf together.
+  if $clamav::manage_on_access {
+    $oa_path_hash      = $clamav::on_access_paths.empty ? {
+      true    => {},
+      default => { 'OnAccessIncludePath' => $clamav::on_access_paths },
+    }
+    $effective_options = $clamav::clamd_options + $oa_path_hash + $clamav::on_access_options
+  } else {
+    $effective_options = $clamav::clamd_options
+  }
+
   package { 'clamd':
     ensure => $clamav::clamd_version,
     name   => $clamav::clamd_package,
@@ -19,7 +31,7 @@ class clamav::clamd (
     owner   => 'root',
     group   => 'root',
     content => epp('clamav/clamav.conf.epp', {
-        config_options => $clamav::clamd_options,
+        config_options => $effective_options,
         sort_options   => $sort_options,
     }),
   }
