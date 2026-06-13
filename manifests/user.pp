@@ -1,7 +1,11 @@
-# @summary Manage clam user/group.
+# @summary Manage the ClamAV system user and group.
+#
+# Manages the user/group only when the parent class parameter
+# manage_user is true AND the relevant user/group name is set.
+#
 class clamav::user {
   if $clamav::group {
-    group { 'clamav':
+    group { 'clamav_group':
       ensure => present,
       name   => $clamav::group,
       gid    => $clamav::gid,
@@ -10,7 +14,7 @@ class clamav::user {
   }
 
   if $clamav::user {
-    user { 'clamav':
+    user { 'clamav_user':
       ensure  => present,
       name    => $clamav::user,
       comment => $clamav::comment,
@@ -20,6 +24,10 @@ class clamav::user {
       home    => $clamav::home,
       shell   => $clamav::shell,
       system  => true,
+    }
+
+    if $clamav::group {
+      Group['clamav_group'] -> User['clamav_user']
     }
   }
 }

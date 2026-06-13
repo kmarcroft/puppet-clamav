@@ -1,26 +1,20 @@
 # @summary Set up freshclam config and service.
 #
 # @param config_owner
-#   owner of the freshclam config file
+#   Owner of the freshclam configuration file.
 # @param config_group
-#   group that owns the freshclam config file
-# @param mode
-#   mode of the freshclam config file
+#   Group that owns the freshclam configuration file.
+# @param config_mode
+#   File mode of the freshclam configuration file.
 # @param sort_options
-#   for true, the options are sorted,
+#   When true the configuration keys are written in alphabetical order.
 #
-class clamav::freshclam(
-  String  $config_owner = 'root',
-  String  $config_group = 'root',
-  String  $config_mode  = '0644',
-  Boolean $sort_options = true,
-){
-
-  $config_options = $clamav::_freshclam_options
-  $freshclam_delay = $clamav::freshclam_delay
-
-  # NOTE: In RedHat this is part of the base clamav_package
-  # NOTE: In Debian this is a dependency of the base clamav_package
+class clamav::freshclam (
+  String[1] $config_owner = 'root',
+  String[1] $config_group = 'root',
+  String[1] $config_mode  = '0644',
+  Boolean   $sort_options = true,
+) {
   if $clamav::freshclam_package {
     package { 'freshclam':
       ensure => $clamav::freshclam_version,
@@ -35,17 +29,22 @@ class clamav::freshclam(
     mode    => $config_mode,
     owner   => $config_owner,
     group   => $config_group,
-    content => template("${module_name}/clamav.conf.erb"),
+    content => epp('clamav/clamav.conf.epp', {
+        config_options => $clamav::freshclam_options,
+        sort_options   => $sort_options,
+    }),
   }
 
   if $clamav::freshclam_sysconfig {
     file { 'freshclam_sysconfig':
       ensure  => file,
       path    => $clamav::freshclam_sysconfig,
-      mode    => '0644',
+      mode    => '0640',
       owner   => 'root',
       group   => 'root',
-      content => template("${module_name}/sysconfig/freshclam.erb"),
+      content => epp('clamav/sysconfig/freshclam.epp', {
+          freshclam_delay => $clamav::freshclam_delay,
+      }),
     }
 
     $service_subscribe = [
@@ -56,7 +55,7 @@ class clamav::freshclam(
     $service_subscribe = File['freshclam.conf']
   }
 
-  # NOTE: RedHat <8 comes with /etc/cron.daily/freshclam instead of a service
+  # On RedHat < 8 freshclam runs via /etc/cron.daily/freshclam - no service.
   if $clamav::freshclam_service {
     service { 'freshclam':
       ensure     => $clamav::freshclam_service_ensure,
@@ -66,9 +65,9 @@ class clamav::freshclam(
       hasstatus  => true,
       subscribe  => $service_subscribe,
     }
-  }
 
-  if $clamav::freshclam_package and $clamav::freshclam_service {
-    Package['freshclam'] ~> Service['freshclam']
+    if $clamav::freshclam_package {
+      Package['freshclam'] ~> Service['freshclam']
+    }
   }
 }

@@ -1,0 +1,79 @@
+---
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+
+env:
+  BUNDLE_WITHOUT: system_tests
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  validate:
+    name: PDK Validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+      - name: Metadata validation
+        run: bundle exec rake metadata_lint
+      - name: Puppet syntax
+        run: bundle exec rake syntax
+      - name: Puppet lint
+        run: bundle exec rake lint
+      - name: Ruby style (rubocop)
+        run: bundle exec rake rubocop
+
+  unit:
+    name: Unit Tests (Ruby ${{ matrix.ruby }} / Puppet ${{ matrix.puppet }})
+    needs: validate
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - ruby: '3.2'
+            puppet: '~> 8.0'
+    env:
+      PUPPET_GEM_VERSION: ${{ matrix.puppet }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - name: Run unit tests
+        run: bundle exec rake spec
+
+  build:
+    name: Build Module Package
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: unit
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+      - name: Build module
+        run: bundle exec rake module:build
+      - name: Upload package
+        uses: actions/upload-artifact@v4
+        with:
+          name: puppet-module-pkg
+          path: pkg/*.tar.gz
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: pkg/*.tar.gz
+          generate_release_notes: true

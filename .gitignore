@@ -1,28 +1,39 @@
-.git/
+# Editor and OS
+.DS_Store
 .*.sw[op]
-.metadata
-.yardoc
-.yardwarns
 *.iml
-/.bundle/
+.project
+.metadata
+.envrc
 /.idea/
-/.vagrant/
-/coverage/
-/bin/
-/doc/
+/.vscode/
+
+# Ruby / Bundler
+/.bundle/
 /Gemfile.local
 /Gemfile.lock
-/junit/
-/log/
-/pkg/
-/spec/fixtures/manifests/
-/spec/fixtures/modules/*
-/tmp/
 /vendor/
+/bin/
+
+# PDK / Puppet module build
+/pkg/
 /convert_report.txt
 /update_report.txt
-.DS_Store
-.project
-.envrc
-/inventory.yaml
+
+# Test artefacts
+/coverage/
+/junit/
+/log/
+/tmp/
+/spec/fixtures/manifests/
+/spec/fixtures/modules/
 /spec/fixtures/litmus_inventory.yaml
+
+# Puppet Litmus / Bolt
+/inventory.yaml
+/.vagrant/
+
+# YARD docs
+/.yardoc/
+/.yardwarns
+/doc/
