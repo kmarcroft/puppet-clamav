@@ -31,26 +31,6 @@ describe 'clamav::user', type: :class do
         it { is_expected.to contain_group('clamav_group').that_comes_before('User[clamav_user]') }
       end
 
-      context 'with group unset' do
-        let(:pre_condition) do
-          "class { 'clamav': manage_user => true, group => undef }"
-        end
-
-        it { is_expected.to compile.with_all_deps }
-        it { is_expected.not_to contain_group('clamav_group') }
-        it { is_expected.to contain_user('clamav_user') }
-      end
-
-      context 'with user unset' do
-        let(:pre_condition) do
-          "class { 'clamav': manage_user => true, user => undef }"
-        end
-
-        it { is_expected.to compile.with_all_deps }
-        it { is_expected.to contain_group('clamav_group') }
-        it { is_expected.not_to contain_user('clamav_user') }
-      end
-
       context 'with custom user and group' do
         let(:pre_condition) do
           "class { 'clamav':

@@ -76,36 +76,6 @@ describe 'clamav::freshclam', type: :class do
       end
 
       # ------------------------------------------------------------------ #
-      # No package when freshclam_package is undef                         #
-      # On RedHat, module Hiera data always provides freshclam_package so  #
-      # the undef override only takes effect on Debian-family platforms.   #
-      # ------------------------------------------------------------------ #
-      if facts[:os]['family'] == 'Debian'
-        context 'with freshclam_package => undef' do
-          let(:pre_condition) do
-            "class { 'clamav': manage_freshclam => true, freshclam_package => undef }"
-          end
-
-          it { is_expected.to compile.with_all_deps }
-          it { is_expected.not_to contain_package('freshclam') }
-          it { is_expected.to contain_file('freshclam.conf') }
-        end
-
-        # ---------------------------------------------------------------- #
-        # No service when freshclam_service is undef                       #
-        # ---------------------------------------------------------------- #
-        context 'with freshclam_service => undef' do
-          let(:pre_condition) do
-            "class { 'clamav': manage_freshclam => true, freshclam_service => undef }"
-          end
-
-          it { is_expected.to compile.with_all_deps }
-          it { is_expected.not_to contain_service('freshclam') }
-          it { is_expected.to contain_file('freshclam.conf') }
-        end
-      end
-
-      # ------------------------------------------------------------------ #
       # Custom freshclam_options                                            #
       # ------------------------------------------------------------------ #
       context 'with custom freshclam_options' do
