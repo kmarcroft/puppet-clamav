@@ -20,16 +20,51 @@ clamav::manage_freshclam:     false
 clamav::manage_clamav_milter: false
 clamav::manage_on_access:     false
 
-# On-access scanning defaults: detection-only, exclude root processes and
-# noisy pseudo-filesystems to keep performance impact low.
-clamav::on_access_paths: []
+# On-access scanning defaults: whole-system, detection-only, with exclusions for
+# pseudo-filesystems, remote mounts, container layers, and other paths that
+# either cannot carry malware or are prohibitively expensive to scan.
+#
+# Set clamav::manage_on_access: true in your Hiera to activate.
+# Override clamav::on_access_paths if you need a narrower scope.
+clamav::on_access_paths:
+  - '/'
 
 clamav::on_access_options:
+  # ----- Scanning mode --------------------------------------------------- #
+  # false = detection/alert only (log + notify), no blocking.               #
+  # Set to true only if you accept the risk of legitimate access being       #
+  # denied on a false positive and have tested thoroughly.                   #
   OnAccessPrevention:     false
-  OnAccessExcludeRootUID: true
+
+  # ----- Performance safeguards ------------------------------------------ #
+  # Skip files larger than 5 MB at open time; clamd scheduled scans cover   #
+  # large files in full.                                                     #
   OnAccessMaxFileSize:    '5M'
+  # Do not scan files opened by root — root can already read anything.       #
+  OnAccessExcludeRootUID: true
+  # Do not follow the fanotify event queue across bind/overlay mount points; #
+  # prevents double-scanning container layers and remote mounts.             #
+  OnAccessDisableDDD:     true
+
+  # ----- Path exclusions -------------------------------------------------- #
+  # Kernel virtual / pseudo-filesystems — no real files, scanning is noise.  #
+  # Remote filesystems — scanning on the client silently re-downloads every  #
+  #   block; let the server-side AV handle these.                            #
+  # Container storage — overlay layers are scanned by the registry/CI;       #
+  #   in-kernel page-cache sharing means re-scanning is wasteful.            #
+  # Snap mounts — squashfs loop-back, signed & read-only, changed by snap.  #
   OnAccessExcludePath:
     - '/proc'
     - '/sys'
     - '/dev'
+    - '/run'
+    - '/snap'
+    - '/var/lib/snapd/snaps'
+    - '/var/lib/docker'
+    - '/var/lib/containers'
+    - '/var/lib/kubelet'
+    - '/nfs'
+    - '/mnt'
+    - '/media'
+    - '/net'
 

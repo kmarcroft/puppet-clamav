@@ -100,6 +100,76 @@ class { 'clamav':
 }
 ```
 
+### On-access scanning (whole-system, detection-only)
+
+On-access scanning uses the Linux `fanotify` API to intercept file-open
+events in real time.  It requires:
+
+- A Linux kernel with `fanotify` support (all supported OS versions have this)
+- The `clamd` daemon running as `root` initially (it drops privileges after the
+  fanotify file descriptor is open, as controlled by the `User` directive)
+- `manage_clamd => true`
+
+The module defaults are tuned for whole-system, **detection-only** scanning
+with exclusions that eliminate noise and remote-filesystem overhead:
+
+```yaml
+# Hiera — minimal addition to enable on-access scanning
+clamav::manage_clamd:     true
+clamav::manage_freshclam: true
+clamav::manage_on_access: true
+```
+
+By default the scanner monitors `/` with the following path exclusions:
+
+| Excluded path | Reason |
+|---|---|
+| `/proc`, `/sys`, `/dev`, `/run` | Kernel pseudo-filesystems — no real files |
+| `/snap`, `/var/lib/snapd/snaps` | Signed, read-only squashfs loop mounts |
+| `/var/lib/docker`, `/var/lib/containers`, `/var/lib/kubelet` | Container overlay layers — scanned at build/push time |
+| `/nfs`, `/mnt`, `/media`, `/net` | Remote/removable filesystems — scan on the server side |
+
+And the following performance safeguards are applied:
+
+| Option | Value | Reason |
+|---|---|---|
+| `OnAccessPrevention` | `false` | Alert-only; blocking can cause deadlocks on false positives |
+| `OnAccessMaxFileSize` | `5M` | Skip large files at open time; schedule scans cover them |
+| `OnAccessExcludeRootUID` | `true` | Root can already read anything; skip its file events |
+| `OnAccessDisableDDD` | `true` | Prevents re-scanning the same file via bind/overlay mounts |
+
+#### Narrow the scan scope
+
+If you want to scan only specific directories instead of `/`:
+
+```yaml
+clamav::on_access_paths:
+  - '/home'
+  - '/tmp'
+  - '/var/www'
+```
+
+#### Enable blocking mode (prevention)
+
+Only do this after thorough testing in detection-only mode.  A false
+positive will deny legitimate file access:
+
+```yaml
+clamav::on_access_options:
+  OnAccessPrevention: true
+```
+
+#### Add extra path exclusions
+
+Option hashes are deep-merged, so add entries at any Hiera level:
+
+```yaml
+clamav::on_access_options:
+  OnAccessExcludePath:
+    - '/data/nfs'
+    - '/var/backups'
+```
+
 ## Configuration via Hiera
 
 All class parameters can be set via Hiera.  Option hashes are
