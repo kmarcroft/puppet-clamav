@@ -15,10 +15,10 @@ end
 
 group :development do
   gem "voxpupuli-puppet-lint-plugins", '~> 5.0', require: false
-  gem "facterdb", '~> 2.0',                      require: false
+  gem "facterdb", '~> 3.0',                      require: false
   gem "metadata-json-lint", '~> 3.0',            require: false
   gem "puppetlabs_spec_helper", '~> 8.0',        require: false
-  gem "rspec-puppet-facts", '~> 4.0',            require: false
+  gem "rspec-puppet-facts", '~> 5.4',            require: false
   gem "dependency_checker", '~> 1.0',            require: false
   gem "parallel_tests", '~> 4.0',                require: false
   gem "pry", '~> 0.14',                          require: false

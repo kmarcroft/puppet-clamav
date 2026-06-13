@@ -37,6 +37,7 @@ end
 
 RSpec.configure do |c|
   c.default_facts = default_facts
+  c.facterdb_string_keys = false
   c.before :each do
     Puppet.settings[:strict] = :warning
     Puppet.settings[:strict_variables] = true
