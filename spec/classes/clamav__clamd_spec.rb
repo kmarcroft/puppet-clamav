@@ -101,7 +101,7 @@ describe 'clamav::clamd', type: :class do
       # sort_options parameter                                              #
       # ------------------------------------------------------------------ #
       context 'with sort_options => false' do
-        let(:pre_condition) { "include clamav" }
+        let(:pre_condition) { 'include clamav' }
         let(:params) { { sort_options: false } }
 
         it { is_expected.to compile.with_all_deps }

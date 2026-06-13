@@ -120,7 +120,7 @@ describe 'clamav::freshclam', type: :class do
       # Custom config file ownership                                        #
       # ------------------------------------------------------------------ #
       context 'with custom config_owner and config_group' do
-        let(:pre_condition) { "include clamav" }
+        let(:pre_condition) { 'include clamav' }
         let(:params) { { config_owner: 'clamav', config_group: 'clamav', config_mode: '0640' } }
 
         it { is_expected.to compile.with_all_deps }
