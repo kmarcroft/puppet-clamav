@@ -160,7 +160,7 @@ describe 'clamav::clamd', type: :class do
         end
 
         it { is_expected.to compile.with_all_deps }
-        it { is_expected.to contain_file('clamd.conf').with_content(%r{OnAccessIncludePath /\b}) }
+        it { is_expected.to contain_file('clamd.conf').with_content(%r{^OnAccessIncludePath /$}) }
         it { is_expected.to contain_file('clamd.conf').with_content(%r{OnAccessExcludePath /proc}) }
         it { is_expected.to contain_file('clamd.conf').with_content(%r{OnAccessExcludePath /snap}) }
         it { is_expected.to contain_file('clamd.conf').with_content(%r{OnAccessDisableDDD true}) }
