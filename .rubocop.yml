@@ -20,17 +20,6 @@ AllCops:
 Layout/LineLength:
   Description: People have wide screens, use them.
   Max: 200
-RSpec/BeforeAfterAll:
-  Description: Beware of using after(:all) as it may cause state to leak between tests.
-    A necessary evil in acceptance testing.
-  Exclude:
-  - spec/acceptance/**/*.rb
-RSpec/HookArgument:
-  Description: Prefer explicit :each argument, matching existing module's style
-  EnforcedStyle: each
-RSpec/DescribeSymbol:
-  Exclude:
-  - spec/unit/facter/**/*.rb
 Style/BlockDelimiters:
   Description: Prefer braces for chaining. Mostly an aesthetical choice. Better to
     be consistent then.
@@ -70,8 +59,6 @@ Style/TrailingCommaInArrayLiteral:
 Style/SymbolArray:
   Description: Using percent style obscures symbolic intent of array's contents.
   EnforcedStyle: brackets
-RSpec/MessageSpies:
-  EnforcedStyle: receive
 Style/Documentation:
   Exclude:
   - lib/puppet/parser/functions/**/*
@@ -113,10 +100,6 @@ Style/StringMethods:
 Bundler/GemFilename:
   Enabled: false
 Bundler/InsecureProtocolSource:
-  Enabled: false
-Capybara/CurrentPathExpectation:
-  Enabled: false
-Capybara/VisibilityMatcher:
   Enabled: false
 Gemspec/DuplicatedAssignment:
   Enabled: false
@@ -290,88 +273,6 @@ Performance/UnfreezeString:
   Enabled: false
 Performance/UriDefaultParser:
   Enabled: false
-RSpec/Be:
-  Enabled: false
-RSpec/Capybara/FeatureMethods:
-  Enabled: false
-RSpec/ContainExactly:
-  Enabled: false
-RSpec/ContextMethod:
-  Enabled: false
-RSpec/ContextWording:
-  Enabled: false
-RSpec/DescribeClass:
-  Enabled: false
-RSpec/EmptyHook:
-  Enabled: false
-RSpec/EmptyLineAfterExample:
-  Enabled: false
-RSpec/EmptyLineAfterExampleGroup:
-  Enabled: false
-RSpec/EmptyLineAfterHook:
-  Enabled: false
-RSpec/ExampleLength:
-  Enabled: false
-RSpec/ExampleWithoutDescription:
-  Enabled: false
-RSpec/ExpectChange:
-  Enabled: false
-RSpec/ExpectInHook:
-  Enabled: false
-RSpec/FactoryBot/AttributeDefinedStatically:
-  Enabled: false
-RSpec/FactoryBot/CreateList:
-  Enabled: false
-RSpec/FactoryBot/FactoryClassName:
-  Enabled: false
-RSpec/HooksBeforeExamples:
-  Enabled: false
-RSpec/ImplicitBlockExpectation:
-  Enabled: false
-RSpec/ImplicitSubject:
-  Enabled: false
-RSpec/LeakyConstantDeclaration:
-  Enabled: false
-RSpec/LetBeforeExamples:
-  Enabled: false
-RSpec/MatchArray:
-  Enabled: false
-RSpec/MissingExampleGroupArgument:
-  Enabled: false
-RSpec/MultipleExpectations:
-  Enabled: false
-RSpec/MultipleMemoizedHelpers:
-  Enabled: false
-RSpec/MultipleSubjects:
-  Enabled: false
-RSpec/NestedGroups:
-  Enabled: false
-RSpec/PredicateMatcher:
-  Enabled: false
-RSpec/ReceiveCounts:
-  Enabled: false
-RSpec/ReceiveNever:
-  Enabled: false
-RSpec/RepeatedExampleGroupBody:
-  Enabled: false
-RSpec/RepeatedExampleGroupDescription:
-  Enabled: false
-RSpec/RepeatedIncludeExample:
-  Enabled: false
-RSpec/ReturnFromStub:
-  Enabled: false
-RSpec/SharedExamples:
-  Enabled: false
-RSpec/StubbedMock:
-  Enabled: false
-RSpec/UnspecifiedException:
-  Enabled: false
-RSpec/VariableDefinition:
-  Enabled: false
-RSpec/VoidExpect:
-  Enabled: false
-RSpec/Yield:
-  Enabled: false
 Security/Open:
   Enabled: false
 Style/AccessModifierDeclarations:
@@ -488,16 +389,6 @@ Style/TrailingMethodEndStatement:
   Enabled: false
 Style/UnpackFirst:
   Enabled: false
-Capybara/MatchStyle:
-  Enabled: false
-Capybara/NegationMatcher:
-  Enabled: false
-Capybara/SpecificActions:
-  Enabled: false
-Capybara/SpecificFinders:
-  Enabled: false
-Capybara/SpecificMatcher:
-  Enabled: false
 Gemspec/DeprecatedAttributeAssignment:
   Enabled: false
 Gemspec/DevelopmentDependencies:
@@ -583,50 +474,6 @@ Performance/RedundantEqualityComparisonBlock:
 Performance/RedundantSplitRegexpArgument:
   Enabled: false
 Performance/StringIdentifierArgument:
-  Enabled: false
-RSpec/BeEq:
-  Enabled: false
-RSpec/BeNil:
-  Enabled: false
-RSpec/ChangeByZero:
-  Enabled: false
-RSpec/ClassCheck:
-  Enabled: false
-RSpec/DuplicatedMetadata:
-  Enabled: false
-RSpec/ExcessiveDocstringSpacing:
-  Enabled: false
-RSpec/FactoryBot/ConsistentParenthesesStyle:
-  Enabled: false
-RSpec/FactoryBot/FactoryNameStyle:
-  Enabled: false
-RSpec/FactoryBot/SyntaxMethods:
-  Enabled: false
-RSpec/IdenticalEqualityAssertion:
-  Enabled: false
-RSpec/NoExpectationExample:
-  Enabled: false
-RSpec/PendingWithoutReason:
-  Enabled: false
-RSpec/Rails/AvoidSetupHook:
-  Enabled: false
-RSpec/Rails/HaveHttpStatus:
-  Enabled: false
-RSpec/Rails/InferredSpecType:
-  Enabled: false
-RSpec/Rails/MinitestAssertions:
-  Enabled: false
-RSpec/Rails/TravelAround:
-  Enabled: false
-RSpec/RedundantAround:
-  Enabled: false
-RSpec/SkipBlockInsideExample:
-  Enabled: false
-RSpec/SortMetadata:
-  Enabled: false
-RSpec/SubjectDeclaration:
-  Enabled: false
-RSpec/VerifiedDoubleReference:
   Enabled: false
 Security/CompoundHash:
   Enabled: false
