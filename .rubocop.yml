@@ -1,8 +1,6 @@
 ---
 plugins:
 - rubocop-performance
-require:
-- rubocop-rspec
 AllCops:
   DisplayCopNames: true
   TargetRubyVersion: 3.1
