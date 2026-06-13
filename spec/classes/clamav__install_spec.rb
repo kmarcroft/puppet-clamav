@@ -11,12 +11,7 @@ describe 'clamav::install', type: :class do
       context 'with defaults' do
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_package('clamav').with_ensure('installed') }
-
-        if facts[:os]['family'] == 'RedHat'
-          it { is_expected.to contain_package('clamav').with_name('clamav') }
-        else
-          it { is_expected.to contain_package('clamav').with_name('clamav') }
-        end
+        it { is_expected.to contain_package('clamav').with_name('clamav') }
       end
 
       context 'with a specific clamav_version' do

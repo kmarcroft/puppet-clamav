@@ -45,7 +45,6 @@ RSpec.configure do |c|
   c.after(:suite) do
     RSpec::Puppet::Coverage.report!(0)
   end
-end
 
   # Filter backtrace noise
   backtrace_exclusion_patterns = [
