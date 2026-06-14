@@ -65,8 +65,14 @@ jobs:
         with:
           ruby-version: '3.2'
           bundler-cache: true
+      - name: Install PDK
+        run: |
+          wget -q https://apt.puppet.com/puppet-tools-release-$(lsb_release -cs).deb
+          sudo dpkg -i puppet-tools-release-$(lsb_release -cs).deb
+          sudo apt-get update -qq
+          sudo apt-get install -y pdk
       - name: Build module
-        run: bundle exec rake module:build
+        run: pdk build --force
       - name: Upload package
         uses: actions/upload-artifact@v4
         with:
