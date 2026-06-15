@@ -23,6 +23,19 @@ class clamav::freshclam (
     }
   }
 
+  # Ensure the database directory exists and is writable by the freshclam
+  # user.  The package normally creates this, but ownership may be wrong
+  # after upgrades or on distributions that changed the user's UID/GID
+  # (e.g. RHEL 10 ships clamupdate with a different UID than RHEL 8/9).
+  file { 'freshclam_db_dir':
+    ensure => directory,
+    path   => $clamav::freshclam_db_dir,
+    owner  => $clamav::freshclam_db_owner,
+    group  => $clamav::freshclam_db_group,
+    mode   => '0755',
+    before => File['freshclam.conf'],
+  }
+
   file { 'freshclam.conf':
     ensure  => file,
     path    => $clamav::freshclam_config,

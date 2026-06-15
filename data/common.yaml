@@ -26,6 +26,13 @@ clamav::manage_on_access:     false
 clamav::freshclam_database_mirrors:
   - 'database.clamav.net'
 
+# The database directory must be writable by the freshclam process user.
+# Puppet manages the directory ownership so it survives package reinstalls
+# and UID changes (e.g. RHEL10 assigns different UIDs than RHEL8/9).
+clamav::freshclam_db_dir:   '/var/lib/clamav'
+clamav::freshclam_db_owner: 'clamav'
+clamav::freshclam_db_group: 'clamav'
+
 # On-access scanning defaults: whole-system, detection-only, with exclusions for
 # pseudo-filesystems, remote mounts, container layers, and other paths that
 # either cannot carry malware or are prohibitively expensive to scan.

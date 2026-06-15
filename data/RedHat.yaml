@@ -86,6 +86,8 @@ clamav::freshclam_service:        'clamav-freshclam'
 clamav::freshclam_service_ensure: 'running'
 clamav::freshclam_service_enable: true
 clamav::freshclam_sysconfig:      '/etc/sysconfig/freshclam'
+clamav::freshclam_db_owner:       'clamupdate'
+clamav::freshclam_db_group:       'clamupdate'
 
 clamav::freshclam_options:
   Bytecode:           true

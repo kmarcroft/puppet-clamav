@@ -43,6 +43,16 @@ describe 'clamav::freshclam', type: :class do
         it { is_expected.to contain_service('freshclam').with_enable(true) }
         it { is_expected.to contain_service('freshclam').that_subscribes_to('File[freshclam.conf]') }
         it { is_expected.to contain_package('freshclam').that_comes_before('File[freshclam.conf]') }
+
+        if facts[:os]['family'] == 'RedHat'
+          it { is_expected.to contain_file('freshclam_db_dir').with_owner('clamupdate').with_group('clamupdate') }
+        else
+          it { is_expected.to contain_file('freshclam_db_dir').with_owner('clamav').with_group('clamav') }
+        end
+
+        it { is_expected.to contain_file('freshclam_db_dir').with_ensure('directory').with_mode('0755') }
+        it { is_expected.to contain_file('freshclam_db_dir').with_path('/var/lib/clamav') }
+        it { is_expected.to contain_file('freshclam_db_dir').that_comes_before('File[freshclam.conf]') }
       end
 
       # ------------------------------------------------------------------ #

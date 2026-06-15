@@ -68,6 +68,17 @@
 #   first-wins Hiera merge so the entire list is replaced (not appended to)
 #   when overridden, avoiding the array-concatenation issue that deep merge
 #   would cause.  Defaults to ["database.clamav.net"].
+# @param freshclam_db_dir
+#   Path to the ClamAV database directory.  Puppet ensures this directory
+#   exists and is owned by freshclam_db_owner/freshclam_db_group so that
+#   freshclam can write signature updates regardless of how the package
+#   manager set up ownership (RHEL10 changed UIDs relative to RHEL8/9).
+# @param freshclam_db_owner
+#   User that owns the database directory and runs freshclam.
+#   Defaults to 'clamupdate' on RedHat, 'clamav' on Debian.
+# @param freshclam_db_group
+#   Group that owns the database directory.
+#   Defaults to 'clamupdate' on RedHat, 'clamav' on Debian.
 # @param freshclam_sysconfig
 #   Absolute path to the freshclam sysconfig file (RedHat only, undef on Debian).
 # @param freshclam_delay
@@ -136,6 +147,9 @@ class clamav (
   Boolean                        $freshclam_service_enable     = true,
   Hash[String[1], NotUndef]      $freshclam_options            = {},
   Array[String[1]]               $freshclam_database_mirrors   = ['database.clamav.net'],
+  Stdlib::Absolutepath           $freshclam_db_dir             = '/var/lib/clamav',
+  String[1]                      $freshclam_db_owner           = 'clamav',
+  String[1]                      $freshclam_db_group           = 'clamav',
   Optional[Stdlib::Absolutepath] $freshclam_sysconfig          = undef,
   Optional[String]               $freshclam_delay              = undef,
 
