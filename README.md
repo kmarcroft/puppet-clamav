@@ -61,7 +61,9 @@ class { 'clamav':
 ### Customise clamd and freshclam options
 
 Values deep-merge across all Hiera levels, so you only need to supply
-the keys you want to change.
+the keys you want to change.  `DatabaseMirror` is a dedicated parameter
+with first-wins semantics so that overriding it replaces (rather than
+appends to) the module default.
 
 ```puppet
 class { 'clamav':

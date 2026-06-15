@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.0.1] - 2026-06-15  Kristian Marcroft
+
+### Bug fixes
+- **RHEL10 freshclam permission error** — `freshclam` failed with
+  *"Can't create temporary directory /var/lib/clamav/tmp.*"* because
+  RHEL10 assigns different UIDs/GIDs to the `clamupdate` user than
+  RHEL8/9.  `clamav::freshclam` now manages `/var/lib/clamav` (or the
+  path configured in `freshclam_db_dir`) as a Puppet file resource,
+  ensuring it is always owned by the correct user before the service
+  starts.
+- **DatabaseMirror duplication** — setting `DatabaseMirror` inside the
+  deep-merged `freshclam_options` hash caused the default mirror to be
+  appended to rather than replaced.  `DatabaseMirror` is now a
+  dedicated `freshclam_database_mirrors` parameter with normal
+  first-wins Hiera merge semantics.
+
+### New parameters
+| Parameter | Default | Description |
+|---|---|---|
+| `freshclam_database_mirrors` | `['database.clamav.net']` | Replaces the mirror list; uses first-wins Hiera merge |
+| `freshclam_db_dir` | `/var/lib/clamav` | Path to the ClamAV database directory |
+| `freshclam_db_owner` | `clamupdate` (RedHat) / `clamav` (Debian) | User that must own the database directory |
+| `freshclam_db_group` | `clamupdate` (RedHat) / `clamav` (Debian) | Group that must own the database directory |
+| `manage_on_access` | `false` | Enable fanotify-based on-access scanning |
+| `on_access_paths` | `['/']` | Paths monitored by the on-access scanner |
+| `on_access_options` | see `data/common.yaml` | On-access clamd.conf directives (deep-merged) |
+
+### Improvements
+- On-access scanning defaults tuned for whole-system, detection-only
+  operation with exclusions for pseudo-filesystems, remote mounts,
+  container overlay storage, and snap mounts.
+
 ## [4.0.0] - 2026-06-13  Kristian Marcroft
 
 ### Breaking changes
