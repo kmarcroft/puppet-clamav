@@ -20,6 +20,12 @@ clamav::manage_freshclam:     false
 clamav::manage_clamav_milter: false
 clamav::manage_on_access:     false
 
+# Override this list to replace (not append to) the default mirror.
+# Uses normal first-wins Hiera merge so your value completely replaces the
+# module default rather than being appended to it.
+clamav::freshclam_database_mirrors:
+  - 'database.clamav.net'
+
 # On-access scanning defaults: whole-system, detection-only, with exclusions for
 # pseudo-filesystems, remote mounts, container layers, and other paths that
 # either cannot carry malware or are prohibitively expensive to scan.

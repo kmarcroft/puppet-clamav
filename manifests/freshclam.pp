@@ -30,7 +30,7 @@ class clamav::freshclam (
     owner   => $config_owner,
     group   => $config_group,
     content => epp('clamav/clamav.conf.epp', {
-        config_options => $clamav::freshclam_options,
+        config_options => $clamav::freshclam_options + { 'DatabaseMirror' => $clamav::freshclam_database_mirrors },
         sort_options   => $sort_options,
     }),
   }

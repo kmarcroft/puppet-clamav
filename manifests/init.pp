@@ -63,6 +63,11 @@
 #   Whether to enable the freshclam service at boot.
 # @param freshclam_options
 #   Hash of freshclam configuration key/value pairs.  Deep-merged across Hiera levels.
+# @param freshclam_database_mirrors
+#   List of DatabaseMirror entries written to freshclam.conf.  Uses normal
+#   first-wins Hiera merge so the entire list is replaced (not appended to)
+#   when overridden, avoiding the array-concatenation issue that deep merge
+#   would cause.  Defaults to ["database.clamav.net"].
 # @param freshclam_sysconfig
 #   Absolute path to the freshclam sysconfig file (RedHat only, undef on Debian).
 # @param freshclam_delay
@@ -130,6 +135,7 @@ class clamav (
   Stdlib::Ensure::Service        $freshclam_service_ensure     = 'running',
   Boolean                        $freshclam_service_enable     = true,
   Hash[String[1], NotUndef]      $freshclam_options            = {},
+  Array[String[1]]               $freshclam_database_mirrors   = ['database.clamav.net'],
   Optional[Stdlib::Absolutepath] $freshclam_sysconfig          = undef,
   Optional[String]               $freshclam_delay              = undef,
 

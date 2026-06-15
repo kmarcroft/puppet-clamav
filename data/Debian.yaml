@@ -89,8 +89,6 @@ clamav::freshclam_options:
   Checks:            24
   ConnectTimeout:    30
   DatabaseDirectory: '/var/lib/clamav'
-  DatabaseMirror:
-    - 'database.clamav.net'
   DatabaseOwner:     'clamav'
   Debug:             false
   DNSDatabaseInfo:   'current.cvd.clamav.net'

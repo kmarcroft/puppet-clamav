@@ -91,6 +91,23 @@ describe 'clamav::freshclam', type: :class do
       end
 
       # ------------------------------------------------------------------ #
+      # Custom database mirrors (replaces, not appends)                     #
+      # ------------------------------------------------------------------ #
+      context 'with custom freshclam_database_mirrors' do
+        let(:pre_condition) do
+          "class { 'clamav':
+            manage_freshclam          => true,
+            freshclam_database_mirrors => ['mirror1.example.com', 'mirror2.example.com'],
+          }"
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_file('freshclam.conf').with_content(%r{DatabaseMirror mirror1\.example\.com}) }
+        it { is_expected.to contain_file('freshclam.conf').with_content(%r{DatabaseMirror mirror2\.example\.com}) }
+        it { is_expected.not_to contain_file('freshclam.conf').with_content(%r{DatabaseMirror database\.clamav\.net}) }
+      end
+
+      # ------------------------------------------------------------------ #
       # Custom config file ownership                                        #
       # ------------------------------------------------------------------ #
       context 'with custom config_owner and config_group' do

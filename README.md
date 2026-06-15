@@ -74,11 +74,12 @@ class { 'clamav':
   freshclam_options => {
     'HTTPProxyServer' => 'myproxy.example.com',
     'HTTPProxyPort'   => '8080',
-    'DatabaseMirror'  => [
-      'clam1.example.com',
-      'clam2.example.com',
-    ],
   },
+  # Replace (not append to) the default mirror list:
+  freshclam_database_mirrors => [
+    'clam1.example.com',
+    'clam2.example.com',
+  ],
 }
 ```
 
@@ -188,13 +189,15 @@ clamav::clamd_options:
     - '^/proc/'
     - '^/sys/'
 
-# tune freshclam
+# Replace the default database mirror (first-wins, not deep-merged):
+clamav::freshclam_database_mirrors:
+  - 'clam1.example.com'
+  - 'clam2.example.com'
+
+# tune other freshclam options (deep-merged):
 clamav::freshclam_options:
   HTTPProxyServer: 'myproxy.example.com'
   HTTPProxyPort: '8080'
-  DatabaseMirror:
-    - 'clam1.example.com'
-    - 'clam2.example.com'
 ```
 
 ## Reference
