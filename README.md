@@ -176,6 +176,26 @@ clamav::on_access_options:
     - '/var/backups'
 ```
 
+#### Virus alert script (VirusEvent)
+
+ClamAV **does not pass the filename as a `%f` argument** — this was
+disabled for security (shell injection risk).  The infected file path is
+passed via the `CLAM_VIRUSEVENT_FILENAME` environment variable instead.
+
+```yaml
+# Correct — do NOT use %f
+clamav::clamd_options:
+  VirusEvent: '/usr/local/bin/clamav-alert %v'
+```
+
+```bash
+#!/bin/bash
+# /usr/local/bin/clamav-alert
+VIRUS="$1"
+FILE="$CLAM_VIRUSEVENT_FILENAME"   # set by clamd before invoking this script
+echo "Virus detected: $VIRUS in $FILE" | mail -s "ClamAV Alert: $VIRUS" security@example.com
+```
+
 ## Configuration via Hiera
 
 All class parameters can be set via Hiera.  Option hashes are
