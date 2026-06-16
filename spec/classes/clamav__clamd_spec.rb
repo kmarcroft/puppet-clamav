@@ -118,68 +118,69 @@ describe 'clamav::clamd', type: :class do
       # ------------------------------------------------------------------ #
       # On-access scanning                                                  #
       # ------------------------------------------------------------------ #
+      context 'with manage_on_access => true and on_access_mount_paths set' do
+        let(:pre_condition) do
+          "class { 'clamav':
+            manage_clamd          => true,
+            manage_on_access      => true,
+            on_access_mount_paths => ['/'],
+          }"
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_file('clamd.conf').with_content(%r{^OnAccessMountPath /$}) }
+        it { is_expected.to contain_file('clamd.conf').with_content(%r{OnAccessPrevention false}) }
+        it { is_expected.to contain_file('clamd.conf').with_content(%r{OnAccessExcludeRootUID true}) }
+        it { is_expected.to contain_file('clamd.conf').with_content(%r{OnAccessMaxFileSize 5M}) }
+        it { is_expected.to contain_file('clamd.conf').with_content(%r{OnAccessExcludePath /proc}) }
+        it { is_expected.not_to contain_file('clamd.conf').with_content(%r{OnAccessIncludePath}) }
+      end
+
       context 'with manage_on_access => true and on_access_paths set' do
         let(:pre_condition) do
           "class { 'clamav':
-            manage_clamd     => true,
-            manage_on_access => true,
-            on_access_paths  => ['/home', '/tmp'],
+            manage_clamd          => true,
+            manage_on_access      => true,
+            on_access_mount_paths => [],
+            on_access_paths       => ['/home', '/tmp'],
           }"
         end
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_file('clamd.conf').with_content(%r{OnAccessIncludePath /home}) }
         it { is_expected.to contain_file('clamd.conf').with_content(%r{OnAccessIncludePath /tmp}) }
-        it { is_expected.to contain_file('clamd.conf').with_content(%r{OnAccessPrevention false}) }
-        it { is_expected.to contain_file('clamd.conf').with_content(%r{OnAccessExcludeRootUID true}) }
-        it { is_expected.to contain_file('clamd.conf').with_content(%r{OnAccessMaxFileSize 5M}) }
-        it { is_expected.to contain_file('clamd.conf').with_content(%r{OnAccessExcludePath /proc}) }
+        it { is_expected.not_to contain_file('clamd.conf').with_content(%r{OnAccessMountPath}) }
       end
 
-      context 'with manage_on_access => true and on_access_paths explicitly empty' do
+      context 'with manage_on_access => true and both path types empty' do
         let(:pre_condition) do
           "class { 'clamav':
-            manage_clamd     => true,
-            manage_on_access => true,
-            on_access_paths  => [],
+            manage_clamd          => true,
+            manage_on_access      => true,
+            on_access_mount_paths => [],
+            on_access_paths       => [],
           }"
         end
 
         it { is_expected.to compile.with_all_deps }
+        it { is_expected.not_to contain_file('clamd.conf').with_content(%r{OnAccessMountPath}) }
         it { is_expected.not_to contain_file('clamd.conf').with_content(%r{OnAccessIncludePath}) }
-        it { is_expected.to contain_file('clamd.conf').with_content(%r{OnAccessPrevention false}) }
-      end
-
-      context 'with manage_on_access => true using whole-system default path' do
-        let(:pre_condition) do
-          "class { 'clamav':
-            manage_clamd     => true,
-            manage_on_access => true,
-            on_access_paths  => ['/'],
-          }"
-        end
-
-        it { is_expected.to compile.with_all_deps }
-        it { is_expected.to contain_file('clamd.conf').with_content(%r{^OnAccessIncludePath /$}) }
-        it { is_expected.to contain_file('clamd.conf').with_content(%r{OnAccessExcludePath /proc}) }
-        it { is_expected.to contain_file('clamd.conf').with_content(%r{OnAccessExcludePath /snap}) }
-        it { is_expected.to contain_file('clamd.conf').with_content(%r{OnAccessDisableDDD true}) }
         it { is_expected.to contain_file('clamd.conf').with_content(%r{OnAccessPrevention false}) }
       end
 
       context 'with manage_on_access => true and OnAccessPrevention overridden' do
         let(:pre_condition) do
           "class { 'clamav':
-            manage_clamd      => true,
-            manage_on_access  => true,
-            on_access_paths   => ['/srv'],
-            on_access_options => { 'OnAccessPrevention' => true },
+            manage_clamd          => true,
+            manage_on_access      => true,
+            on_access_mount_paths => ['/'],
+            on_access_options     => { 'OnAccessPrevention' => true },
           }"
         end
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_file('clamd.conf').with_content(%r{OnAccessPrevention true}) }
-        it { is_expected.to contain_file('clamd.conf').with_content(%r{OnAccessIncludePath /srv}) }
+        it { is_expected.to contain_file('clamd.conf').with_content(%r{^OnAccessMountPath /$}) }
       end
     end
   end

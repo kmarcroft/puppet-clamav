@@ -8,12 +8,22 @@ class clamav::clamd (
 ) {
   # When on-access scanning is requested, merge the on-access paths and options
   # on top of the base clamd options so they land in clamd.conf together.
+  #
+  # OnAccessMountPath is used for mount points (including '/') — it hooks
+  # fanotify at the VFS mount level and works with DDD enabled.
+  # OnAccessIncludePath is used for specific subdirectories only.
+  # Using OnAccessIncludePath '/' with DDD enabled is explicitly rejected by
+  # clamonacc with: "Please use the OnAccessMountPath option to watch '/'"
   if $clamav::manage_on_access {
-    $oa_path_hash      = $clamav::on_access_paths.empty ? {
+    $oa_mount_hash = $clamav::on_access_mount_paths.empty ? {
+      true    => {},
+      default => { 'OnAccessMountPath' => $clamav::on_access_mount_paths },
+    }
+    $oa_path_hash  = $clamav::on_access_paths.empty ? {
       true    => {},
       default => { 'OnAccessIncludePath' => $clamav::on_access_paths },
     }
-    $effective_options = $clamav::clamd_options + $oa_path_hash + $clamav::on_access_options
+    $effective_options = $clamav::clamd_options + $oa_mount_hash + $oa_path_hash + $clamav::on_access_options
   } else {
     $effective_options = $clamav::clamd_options
   }

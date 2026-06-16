@@ -38,9 +38,19 @@ clamav::freshclam_db_group: 'clamav'
 # either cannot carry malware or are prohibitively expensive to scan.
 #
 # Set clamav::manage_on_access: true in your Hiera to activate.
-# Override clamav::on_access_paths if you need a narrower scope.
-clamav::on_access_paths:
+# on_access_mount_paths uses OnAccessMountPath (fanotify at VFS level) —
+# required for '/' and any mount point.  Each separate partition/mount
+# needs its own entry; OnAccessMountPath '/' only covers the root FS.
+# on_access_paths uses OnAccessIncludePath + inotify/DDD for specific
+# subdirectories that are NOT separate mount points.
+clamav::on_access_mount_paths:
   - '/'
+  - '/tmp'
+  - '/var'
+  - '/usr'
+  - '/opt'
+  - '/home'
+clamav::on_access_paths: []
 
 clamav::on_access_options:
   # ----- Scanning mode --------------------------------------------------- #

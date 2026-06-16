@@ -103,10 +103,14 @@
 #   on-access thread retains them even when the User directive is set).
 #   manage_clamd must also be true.  Defaults to detection-only mode
 #   (OnAccessPrevention false) to minimise performance impact.
+# @param on_access_mount_paths
+#   Mount points monitored by clamonacc using OnAccessMountPath.  Use this
+#   for watching entire filesystems including '/' (the root mount).  Hooks
+#   fanotify at the VFS mount level — works correctly with DDD enabled.
+#   Cannot be combined with OnAccessIncludePath for the same path.
 # @param on_access_paths
-#   Absolute paths that clamd's on-access scanner monitors.  Accepts an array
-#   for multiple paths.  At least one path must be set for on-access scanning
-#   to function (e.g. ["/home", "/tmp"]).
+#   Specific directories monitored via OnAccessIncludePath + inotify/DDD.
+#   Do NOT include '/' here — use on_access_mount_paths for root/mounts.
 # @param on_access_options
 #   Hash of on-access clamd configuration key/value pairs merged on top of
 #   clamd_options when manage_on_access is true.  Deep-merged across Hiera
@@ -162,6 +166,7 @@ class clamav (
   Hash[String[1], NotUndef]      $clamav_milter_options        = {},
 
   Boolean                        $manage_on_access             = false,
+  Array[Stdlib::Absolutepath]    $on_access_mount_paths        = [],
   Array[Stdlib::Absolutepath]    $on_access_paths              = [],
   Hash[String[1], NotUndef]      $on_access_options            = {},
 ) {

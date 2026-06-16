@@ -123,7 +123,9 @@ clamav::manage_freshclam: true
 clamav::manage_on_access: true
 ```
 
-By default the scanner monitors `/` with the following path exclusions:
+By default the scanner monitors the root mount via `OnAccessMountPath /`
+(required for whole-system coverage — clamonacc rejects `OnAccessIncludePath /`
+when DDD is enabled).
 
 | Excluded path | Reason |
 |---|---|
@@ -142,9 +144,11 @@ And the following performance safeguards are applied:
 
 #### Narrow the scan scope
 
-If you want to scan only specific directories instead of `/`:
+To watch specific directories instead of the whole system, leave
+`on_access_mount_paths` empty and use `on_access_paths`:
 
 ```yaml
+clamav::on_access_mount_paths: []
 clamav::on_access_paths:
   - '/home'
   - '/tmp'
