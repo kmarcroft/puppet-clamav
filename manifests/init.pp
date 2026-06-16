@@ -103,6 +103,16 @@
 #   on-access thread retains them even when the User directive is set).
 #   manage_clamd must also be true.  Defaults to detection-only mode
 #   (OnAccessPrevention false) to minimise performance impact.
+#   When true, also manages the clamonacc daemon (clamav::clamonacc) which
+#   is the separate process responsible for fanotify event interception.
+# @param clamonacc_fdpass
+#   Pass open file descriptors from clamonacc to clamd (--fdpass).  Required
+#   when clamd runs as a non-root user (the RHEL default: clamscan); without
+#   this clamd cannot open files owned by other users.  Default: true.
+# @param clamonacc_service_ensure
+#   Desired state of the clamonacc service.
+# @param clamonacc_service_enable
+#   Whether to enable the clamonacc service at boot.
 # @param on_access_mount_paths
 #   Mount points monitored by clamonacc using OnAccessMountPath.  Use this
 #   for watching entire filesystems including '/' (the root mount).  Hooks
@@ -166,6 +176,9 @@ class clamav (
   Hash[String[1], NotUndef]      $clamav_milter_options        = {},
 
   Boolean                        $manage_on_access             = false,
+  Boolean                        $clamonacc_fdpass             = true,
+  Stdlib::Ensure::Service        $clamonacc_service_ensure     = 'running',
+  Boolean                        $clamonacc_service_enable     = true,
   Array[Stdlib::Absolutepath]    $on_access_mount_paths        = [],
   Array[Stdlib::Absolutepath]    $on_access_paths              = [],
   Hash[String[1], NotUndef]      $on_access_options            = {},
@@ -194,5 +207,18 @@ class clamav (
   if $manage_clamav_milter {
     contain clamav::clamav_milter
     Class['clamav::install'] -> Class['clamav::clamav_milter']
+  }
+
+  if $manage_on_access {
+    class { 'clamav::clamonacc':
+      fdpass         => $clamonacc_fdpass,
+      service_ensure => $clamonacc_service_ensure,
+      service_enable => $clamonacc_service_enable,
+    }
+    contain clamav::clamonacc
+    Class['clamav::install'] -> Class['clamav::clamonacc']
+    if $manage_clamd {
+      Class['clamav::clamd'] -> Class['clamav::clamonacc']
+    }
   }
 }

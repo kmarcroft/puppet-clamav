@@ -112,6 +112,15 @@ events in real time.  It requires:
 - The `clamd` daemon running as `root` initially (it drops privileges after the
   fanotify file descriptor is open, as controlled by the `User` directive)
 - `manage_clamd => true`
+- The **`clamonacc` daemon** — a separate process that watches fanotify events
+  and forwards them to `clamd` for scanning
+
+When `manage_on_access => true` the module automatically manages the
+`clamonacc` service, including creating a systemd unit file (the EPEL package
+does not ship one).  `--fdpass` is enabled by default so that `clamonacc`
+(running as root) passes already-open file descriptors to `clamd` (running as
+`clamscan`/`clamav`), avoiding *"Access denied"* errors on files owned by other
+users.
 
 The module defaults are tuned for whole-system, **detection-only** scanning
 with exclusions that eliminate noise and remote-filesystem overhead:

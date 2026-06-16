@@ -1,0 +1,24 @@
+<%- |
+  String[1] $config_file,
+  String[1] $clamd_service,
+  Boolean   $fdpass,
+| -%>
+### File managed by Puppet - do not edit manually ###
+[Unit]
+Description=ClamAV On-Access Scanner (clamonacc)
+Documentation=man:clamonacc(8)
+# clamonacc submits scan requests to clamd — it must start after clamd.
+After=<%= $clamd_service %>.service
+Requires=<%= $clamd_service %>.service
+
+[Service]
+Type=simple
+# clamonacc must run as root to open the fanotify file descriptor.
+# --fdpass passes already-open FDs to clamd so clamd does not need
+# privileges to read files owned by other users.
+ExecStart=/usr/sbin/clamonacc --config-file=<%= $config_file %><% if $fdpass { %> --fdpass<% } %> --foreground
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
