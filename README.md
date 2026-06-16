@@ -139,7 +139,6 @@ And the following performance safeguards are applied:
 | `OnAccessPrevention` | `false` | Alert-only; blocking can cause deadlocks on false positives |
 | `OnAccessMaxFileSize` | `5M` | Skip large files at open time; schedule scans cover them |
 | `OnAccessExcludeRootUID` | `true` | Root can already read anything; skip its file events |
-| `OnAccessDisableDDD` | `true` | Prevents re-scanning the same file via bind/overlay mounts |
 
 #### Narrow the scan scope
 

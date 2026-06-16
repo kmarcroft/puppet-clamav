@@ -55,9 +55,11 @@ clamav::on_access_options:
   OnAccessMaxFileSize:    '5M'
   # Do not scan files opened by root — root can already read anything.       #
   OnAccessExcludeRootUID: true
-  # Do not follow the fanotify event queue across bind/overlay mount points; #
-  # prevents double-scanning container layers and remote mounts.             #
-  OnAccessDisableDDD:     true
+  # NOTE: OnAccessDisableDDD is intentionally absent.  Disabling DDD turns  #
+  # recursive watching into non-recursive (top-level only), which means      #
+  # subdirectories — including /tmp — are never watched.  Container/overlay  #
+  # double-scanning is prevented instead by the OnAccessExcludePath entries  #
+  # below.                                                                    #
 
   # ----- Path exclusions -------------------------------------------------- #
   # Kernel virtual / pseudo-filesystems — no real files, scanning is noise.  #
