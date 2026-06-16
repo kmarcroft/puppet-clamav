@@ -71,6 +71,9 @@ describe 'clamav', type: :class do
 
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('clamav::clamd') }
+        it { is_expected.to contain_class('clamav::clamonacc') }
+        it { is_expected.to contain_class('clamav::clamd').that_comes_before('Class[clamav::clamonacc]') }
+        it { is_expected.to contain_class('clamav::install').that_comes_before('Class[clamav::clamonacc]') }
       end
 
       # ------------------------------------------------------------------ #

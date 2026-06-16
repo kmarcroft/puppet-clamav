@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.0.2] - 2026-06-16  Kristian Marcroft
+
+### New feature: `clamav::clamonacc` — managed clamonacc daemon
+
+On-access scanning in ClamAV 0.102+ requires `clamonacc` as a **separate
+process** (it is not part of `clamd`).  The EPEL package does not ship a
+systemd unit for it.  When `manage_on_access => true`, Puppet now:
+
+1. Creates `/etc/systemd/system/clamonacc.service` from an EPP template.
+2. Manages the `clamonacc` service (enabled and running by default).
+3. Ensures `clamd` starts before `clamonacc` (`Requires=` / `After=`).
+4. Restarts `clamonacc` whenever `clamd.conf` or the unit file changes.
+
+`--fdpass` is enabled by default so that `clamonacc` (running as root)
+passes already-open file descriptors to `clamd` (running as `clamscan`/
+`clamav`), avoiding *"Access denied"* errors on files owned by other users.
+
+### New parameters
+| Parameter | Default | Description |
+|---|---|---|
+| `clamonacc_fdpass` | `true` | Pass open FDs to clamd (`--fdpass`); required when clamd drops to a non-root user |
+| `clamonacc_service_ensure` | `'running'` | Desired state of the clamonacc service |
+| `clamonacc_service_enable` | `true` | Whether to enable clamonacc at boot |
+
+---
+
 ## [4.0.1] - 2026-06-15  Kristian Marcroft
 
 ### Bug fixes
