@@ -44,12 +44,21 @@ clamav::freshclam_db_group: 'clamav'
 # on_access_paths uses OnAccessIncludePath + inotify/DDD for specific
 # subdirectories that are NOT separate mount points.
 clamav::on_access_mount_paths:
-  - '/'
-  - '/tmp'
-  - '/var'
-  - '/usr'
-  - '/opt'
-  - '/home'
+  - '/'          # root filesystem
+  - '/home'      # user home directories
+  - '/opt'       # third-party application installs
+  - '/tmp'       # temporary files (noexec, but can stage malicious content)
+  - '/usr'       # system binaries and libraries
+  - '/var'       # variable data (excludes /var/log* sub-mounts — see below)
+  - '/var/tmp'   # persistent temporary files
+  # NOT included — separate mounts that don't benefit from on-access scanning:
+  #   /boot, /boot/efi  — static bootloader/kernel files, rarely written
+  #   /var/log          — pure log data, very high write churn, no executables
+  #   /var/log/audit    — audit logs only
+  #   /var/log/journal  — systemd journal only
+  #   /dev/shm          — tmpfs shared memory, kernel-managed
+  # Note: /var/log* are separate VFS mounts so they are NOT watched by the
+  # /var OnAccessMountPath entry — fanotify only covers the exact mount listed.
 clamav::on_access_paths: []
 
 clamav::on_access_options:
