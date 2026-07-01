@@ -1,6 +1,6 @@
 {
   "name": "marckri-clamav",
-  "version": "4.0.2",
+  "version": "4.0.3",
   "author": "Kristian Marcroft",
   "summary": "Puppet Module for managing ClamAV",
   "license": "GPL-3.0",

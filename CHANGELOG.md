@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.0.3] - 2026-07-01  Kristian Marcroft
+
+### Bug fixes
+- **Debian freshclam config compatibility** — removed the invalid
+  `LogFile` key from `freshclam_options` in Debian defaults.
+  `freshclam.conf` uses `UpdateLogFile` for file logging, which remains
+  configured.
+
+### Improvements
+- Simplified comments in `data/common.yaml` on-access defaults by removing
+  overly verbose guidance while keeping the effective exclusions and
+  behavior unchanged.
+
 ## [4.0.2] - 2026-06-16  Kristian Marcroft
 
 ### New feature: `clamav::clamonacc` — managed clamonacc daemon

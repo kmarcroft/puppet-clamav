@@ -94,7 +94,6 @@ clamav::freshclam_options:
   DNSDatabaseInfo:   'current.cvd.clamav.net'
   Foreground:        false
   LogFacility:       'LOG_LOCAL6'
-  LogFile:           '/var/log/clamav/freshclam.log'
   LogRotate:         true
   LogSyslog:         false
   LogTime:           true
